@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hasil Pendaftaran Beasiswa</title>
+    <style>
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            margin: auto;
+            height: 100%;
+            padding: 20px;
+            width: 1400px;
+            box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+        }
+
+        .header h1 {
+            margin: 0;
+            padding: 10px 0;
+            font-size: 24px;
+            color: #006a4e;
+        }
+       
+
+.signature img {
+    max-width: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; 
+}
+
+.signature-info {
+    position:relative; left:1200px; top:2px;
+}
+
+.signature-info-item {
+    margin: 5px 0;
+}
+
+.signature p {
+    margin: 5px 0;
+    font-weight: bold;
+}
+
+
+        .header p {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #ffffff;
+        }
+        .report-container {
+           
+            margin: 20px ;
+            padding: 20px;
+            width: 1400px;
+            box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+        }
+        h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 2px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f9f9f9;
+            font-weight: bold;
+        }
+        .back-button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="data-container">
+        <div class="header">
+            <h1>Universitas Perjuangan</h1>
+            <p>Jl. Peta No.177, Kahuripan, Kec. Tawang, Tasikmalaya, Jawa Barat 46115</p>
+        </div>
+    
+        
+        <div id="dataList"></div>
+    </div>
+<div class="report-container">
+    <h2>Hasil Pendaftaran Beasiswa</h2>
+    
+    <h3>Beasiswa Akademik</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>NIM</th>
+                <th>Nama</th>
+                <th>Email</th>
+                <th>Nomor HP</th>
+                <th>Semester</th>
+                <th>IPK Terakhir</th>
+                <th>Pilihan Beasiswa</th>
+                <th>Status</th>
+                <th>Berkas</th>
+                <th>Hapus</th>
+            </tr>
+        </thead>
+        <tbody id="akademikList"></tbody>
+    </table>
+    
+    <h3>Beasiswa Non Akademik</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>NIM</th>
+                <th>Nama</th>
+                <th>Email</th>
+                <th>Nomor HP</th>
+                <th>Semester</th>
+                <th>IPK Terakhir</th>
+                <th>Pilihan Beasiswa</th>
+                <th>Status</th>
+                <th>Berkas</th>
+                <th>Hapus</th>
+            </tr>
+        </thead>
+        <tbody id="nonAkademikList"></tbody>
+    </table>
+    
+    
+</div>
+    </div>
+    
+    <div class="signature-info">
+        <div class="signature-info-item">
+            
+            <p id="tanggal">Tasikmalaya, Tanggal</p>
+            TTD
+            <p>Penginput</p>
+
+<script>
+var savedData = JSON.parse(localStorage.getItem('savedData')) || [];
+
+var akademikList = document.getElementById('akademikList');
+var nonAkademikList = document.getElementById('nonAkademikList');
+
+if (savedData.length === 0) {
+    akademikList.innerHTML = "<tr><td colspan='10'>Tidak ada data yang diinputkan.</td></tr>";
+    nonAkademikList.innerHTML = "<tr><td colspan='10'>Tidak ada data yang diinputkan.</td></tr>";
+} else {
+    savedData.forEach(function(data, index) {
+        var dataRow = document.createElement('tr');
+        var dataContent =
+             "<td>" + data.nim + "</td>" +
+            "<td>" + data.nama + "</td>" +
+            "<td>" + data.email + "</td>" +
+            "<td>" + data.nomor_hp + "</td>" +
+            "<td>" + data.semester + "</td>" +
+            "<td>" + data.ipk + "</td>" +
+            "<td>" + data.pilihan_beasiswa + "</td>" +
+            "<td>Belum Diverifikasi</td>" +
+            "<td><a href='" + data.berkas + "' download>Download Berkas</a></td>" +
+            "<td><button onclick='deleteData(" + index + ")'>Hapus</button></td>";
+        dataRow.innerHTML = dataContent;
+        
+        if (data.pilihan_beasiswa === 'Akademik') {
+            akademikList.appendChild(dataRow);
+        } else {
+            nonAkademikList.appendChild(dataRow);
+        }
+    });
+}
+
+function deleteData(index) {
+    savedData.splice(index, 1);
+    localStorage.setItem('savedData', JSON.stringify(savedData));
+    location.reload();
+}
+var currentDate = new Date();
+var options = { year: 'numeric', month: 'long', day: 'numeric' };
+var formattedDate = currentDate.toLocaleDateString('id-ID', options);
+// Mengisi tanggal dan kota ke dalam elemen HTML
+document.getElementById('tanggal').textContent = "Tasikmalaya, " + formattedDate;
+document.getElementById('kota').textContent = "Nama Kota";
+var currentDate = new Date();
+var options = { year: 'numeric', month: 'long', day: 'numeric' };
+var formattedDate = currentDate.toLocaleDateString('id-ID', options);
+
+// Mengisi tanggal ke dalam elemen HTML
+document.getElementById('tanggal').textContent = formattedDate;
+</script>
+
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pendaftaran Beasiswa - Tampilan 2</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+        h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .form label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .form input[type="text"],
+        .form input[type="email"],
+        .form select,
+        .form input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        .form select {
+            height: 35px;
+        }
+        .form input[type="number"] {
+            width: 50%;
+        }
+        .form input[type="button"] {
+            background-color: #006a4e;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            width: 100%;
+            font-size: 16px;
+        }
+        .form input[type="button"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Pendaftaran Beasiswa</h2>
+    <form class="form" id="beasiswaForm">
+        <label for="nim">NIM:</label>
+        <input type="text" placeholder="NIM" id="nim" oninput="checkDuplicatenim(this)">
+        
+        <label for="nama">Nama:</label>
+        <input type="text" placeholder="Nama" id="nama" oninput="checkDuplicateNama(this)">
+        
+        
+        <label for="email">Email:</label>
+<input type="email" placeholder="Email" id="email">
+        
+<label for="nomor_hp">Nomor HP:</label>
+<input type="text" placeholder="Nomor HP" id="nomor_hp" oninput="validateNomorHP(this)">
+        
+        <label for="semester">Semester:</label>
+        <select id="semester">
+            <option value="1">Semester 1</option>
+            <option value="2">Semester 2</option>
+            <option value="1">Semester 3</option>
+            <option value="2">Semester 4</option>
+            <option value="1">Semester 5</option>
+            <option value="2">Semester 6</option>
+            <option value="1">Semester 7</option>
+            <option value="2">Semester 8</option>
+
+            <!-- Tambahkan opsi semester lainnya di sini -->
+        </select>
+        
+        <label for="ipk">IPK Terakhir:</label>
+        <input type="number" step="0.01" placeholder="IPK Terakhir" id="ipk" oninput="checkIPK()">
+        
+        <label for="pilihan_beasiswa">Pilihan Beasiswa:</label>
+        <select id="pilihan_beasiswa" disabled>
+            <option value="Akademik">Akademik</option>
+            <option value="Non Akademik">Non Akademik</option>
+            <!-- Tambahkan opsi pilihan beasiswa lainnya di sini -->
+        </select>
+        
+        <label for="berkas">Unggah Berkas:</label>
+        <input type="file" id="berkas" accept=".pdf,.doc,.docx">
+        
+        <input type="button" value="Daftar" id="daftarButton" disabled onclick="submitForm()">
+            <a href="index.html">Kembali</a>
+    </form>
+</div>
+
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+const type = urlParams.get('type');
+
+const pilihanBeasiswa = (type === 'Akademik') ? 'Akademik' : 'Non Akademik';
+document.getElementById('pilihan_beasiswa').value = pilihanBeasiswa;
+
+function checkIPK() {
+    var ipkInput = document.getElementById("ipk");
+    var daftarButton = document.getElementById("daftarButton");
+    var berkasInput = document.getElementById("berkas");
+    
+    if (ipkInput.value < 3.0) {
+        daftarButton.disabled = true;
+        berkasInput.disabled = true;
+    } else {
+        daftarButton.disabled = false;
+        berkasInput.disabled = false;
+    }
+}
+
+function submitForm() {
+    var nim = document.getElementById("nim").value;
+    var nama = document.getElementById("nama").value;
+    var email = document.getElementById("email").value;
+    var nomor_hp = document.getElementById("nomor_hp").value;
+    var semester = document.getElementById("semester").value;
+    var ipk = document.getElementById("ipk").value;
+    var pilihan_beasiswa = document.getElementById("pilihan_beasiswa").value;
+
+    var berkas = document.getElementById("berkas").files[0];
+    var berkasName = berkas ? berkas.name : "Tidak ada berkas yang diunggah";
+// Validasi format email
+if (!validateEmail(email)) {
+        alert("Format email tidak valid. Pastikan mengandung tanda @.");
+        return;
+    }
+    function validateEmail(email) {
+    var emailRegex = /\S+@\S+\.\S+/;
+    return emailRegex.test(email);
+}
+    var data = {
+        nim: nim,
+        nama: nama,
+        email: email,
+        nomor_hp: nomor_hp,
+        semester: semester,
+        ipk: ipk,
+        pilihan_beasiswa: pilihan_beasiswa,
+        berkas: berkasName
+    };
+
+    // Menyimpan data di local storage
+    var savedData = JSON.parse(localStorage.getItem('savedData')) || [];
+    savedData.push(data);
+    localStorage.setItem('savedData', JSON.stringify(savedData));
+
+    var alertMessage =
+        "Data yang telah Anda masukkan:\n\n" +
+        "NIM: " + nim + "\n" +
+        "Nama: " + nama + "\n" +
+        "Email: " + email + "\n" +
+        "Nomor HP: " + nomor_hp + "\n" +
+        "Semester: " + semester + "\n" +
+        "IPK Terakhir: " + ipk + "\n" +
+        "Pilihan Beasiswa: " + pilihan_beasiswa + "\n" +
+        "Berkas: " + berkasName + "\n\n" +
+        "Telah berhasil disubmit!";
+
+    alert(alertMessage);
+    window.location.href = "hasil.html"; 
+    
+    clearForm();
+}
+function checkDuplicatenim(input) {
+    var nim = input.value.trim();
+    var existingData = JSON.parse(localStorage.getItem('savedData'));
+    
+    if (existingData) {
+        var isDuplicate = existingData.some(function(data) {
+            return data.nim === nim;
+        });
+        if (isDuplicate) {
+            alert("Nim Sudah Pernah Di inputkan!!!");
+            input.value = ''; // Mengosongkan input
+        }
+    }
+}
+
+function clearForm() {
+    document.getElementById("nim").value = "";
+    document.getElementById("nama").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("nomor_hp").value = "";
+    document.getElementById("semester").value = "1";
+    document.getElementById("ipk").value = "";
+    document.getElementById("pilihan_beasiswa").value = pilihanBeasiswa;
+    document.getElementById("berkas").value = "";
+    document.getElementById("daftarButton").disabled = true;
+}
+
+function validateNomorHP(input) {
+    var nomorHP = input.value.replace(/\D/g, ''); // Menghapus karakter selain angka
+    input.value = nomorHP;
+}
+
+
+</script>
+
+</body>
+</html>
